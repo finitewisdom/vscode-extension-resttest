@@ -1,0 +1,97 @@
+todo
+====
+* better name than "httprequestmethods"?
+    * perhaps "getpostput"?
+* next: specify headers after url, e.g.:
+    GET https://code.visualstudio.com/api/working-with-extensions/testing-extension HTTP/1.1
+    Accept: text/html
+    Content-Type: application/x-www-form-urlencoded
+    Cookie: theme=light; sessionToken=abc123
+* next: get fontawesome working
+* next: add "verify" support
+* switch to dark theme
+* need to account for case-insensitive header names in tests
+* rename "rfc2126" to "resttest"
+* show body in abbreviated form with ability to show the rest
+
+- blue is #2062F1; where should we use it?
+- pass cookies along, from one request to the next
+- support # (or ###) to separate sets of requests
+- add support for JSON display
+- add ability to define post data
+
+###
+
+POST https://code.visualstudio.com/api/working-with-extensions/testing-extension HTTP/1.1
+
+test: status equals 404
+
+###
+
+GET https://code.visualstudio.com/api/working-with-extensions/testing-extension HTTP/1.1
+
+test: status equals 200
+
+###
+
+POST http://scooterlabs.com/echo2?a=b HTTP/1.1
+Accept: text/html
+Content-Type: application/x-www-form-urlencoded
+Cookie: theme=light; sessionToken=abc123
+
+test: status equals 200
+test: Content-Type contains text/plain
+test: Transfer-Encoding exists
+
+###
+
+GET http://demo.finitewisdom.com/ HTTP/1.1
+Accept: text/html
+Content-Type: application/x-www-form-urlencoded
+Cookie: theme=light; sessionToken=abc123
+
+test: status equals 302
+test: location contains https
+
+###
+
+GET https://demo.finitewisdom.com/ HTTP/1.1
+Accept: text/html
+Content-Type: application/x-www-form-urlencoded
+Cookie: theme=light; sessionToken=abc123
+
+test: status equals 200
+test: Content-Type contains text/html
+
+###
+
+GET https://demo.finitewisdom.com/ HTTP/1.1
+
+test: status equals 200
+test: Content-Type contains text/html
+
+###
+
+GET http://nextgenvw-rpt.werecognize.com/app/ HTTP/1.1
+
+test: status equals 302
+test: location contains https
+
+###
+
+GET https://nextgenvw-rpt.werecognize.com/app HTTP/1.1
+
+test: status equals 302
+test: location contains login
+
+###
+
+PUT https://nextgenvw-rpt.werecognize.com/app HTTP/1.1
+
+test: status equals 302
+test: location contains login
+
+###
+
+
+

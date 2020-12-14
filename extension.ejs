@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" rel="stylesheet">
+        <style>
+            * {
+                color: #f8f9fa !important;
+            }
+            .text-darker {
+                filter: brightness( 75% );
+            }
+            body {
+                background-color: #1E1F1C;
+            }
+            .card {
+                background-color: #272822;
+            }
+            .card-footer {
+                background-color: #414339;
+            }
+            .card-header {
+                background-color: #414339;
+                /* background-color: #75715E; */
+            }
+            .body {
+                background-color: #34352F;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="card mt-3 mb-3">
+                <div class="card-header">
+                    <!-- request line -->
+                    <code class="fs-5"><%= req.line %></code>
+                    <!-- request headers -->
+                    <div class="headers">
+                        <%
+                            for( let prop in req.headers ) {
+                                if ( req.headers.hasOwnProperty( prop ) ) {
+                        %>
+                                    <div class="header">
+                                        <code><span class="header-name"><%= prop %></span></code
+                                        ><code><span class="header-colon">:</span></code>
+                                        <code><span class="header-value text-darker"><%= req.headers[ prop ] %></span></code>
+                                    </div>
+                        <%
+                                }
+                            }
+                        %>
+                    </div>
+                </div>
+                <% if ( !err ) { %>
+                    <div class="card-body">
+                        <!-- status code -->
+                        <%
+                            let className = "bg-primary",
+                                statusCode = String( res.statusCode );
+
+                            if ( statusCode.startsWith( "1" ) ) {
+                                className = "bg-info";
+                            } else if ( statusCode.startsWith( "2" ) ) {
+                                className = "bg-success";
+                            } else if ( statusCode.startsWith( "3" ) ) {
+                                className = "bg-warning";
+                            } else if ( statusCode.startsWith( "4" ) ) {
+                                className = "bg-danger";
+                            } else if ( statusCode.startsWith( "5" ) ) {
+                                className = "bg-danger";
+                            }
+                        %>
+                        <div class="badge <%= className %>"><%= statusCode %></div>
+                        <!-- response headers -->
+                        <div class="headers">
+                            <%
+                                for( let prop in res.headers ) {
+                                    if ( res.headers.hasOwnProperty( prop ) ) {
+                            %>
+                                        <div class="header">
+                                            <code><span class="header-name"><%= prop %></span></code
+                                            ><code><span class="header-colon">:</span></code>
+                                            <code><span class="header-value text-darker"><%= res.headers[ prop ] %></span></code>
+                                        </div>
+                            <%
+                                    }
+                                }
+                            %>
+                        </div>
+                        <!-- response body -->
+                        <div class="body mt-3 p-3">
+                            <% if ( res.headers[ "content-type" ] && res.headers[ "content-type" ].includes( "text/" ) ) { %>
+                                <pre style="white-space: pre-wrap;"><%= ( res.body.length > 1000 ? res.body.substring( 0, 1000 ) + "..." : res.body ) %></pre>
+                            <% } else { %>
+                                <span>Content type is <%= res.headers[ "content-type" ] %></span>
+                            <% } %>
+                        </div>
+                    </div><!-- card-body -->
+                    <div class="card-footer">
+                        <%
+                            tests.forEach( ( test ) => {
+                                var result = test( res.statusCode, res.headers );
+                                if ( result ) {
+                        %>
+                                    <div class="test">
+                                        <span class="success">
+                                            <%- result.success ? '<i class="fas fa-check-circle fa-fw text-success"></i>' : '<i class="fas fa-times-circle fa-fw text-danger"></i>' %>
+                                        </span>
+                                        <span class="line"><%= result.line %></span>
+                                    </div>
+                        <%
+                                }
+                            } );
+                        %>
+                    </div>
+                <% } else { %>
+                    <div class="card-body">
+                        <div class="alert alert-danger text-danger">
+                            <%= err.message + " " + ( err.detail ? err.detail : "" ) %>
+                        </div>    
+                    </div>
+                <% } %>
+            </div><!-- card -->
+        </div><!-- container-fluid -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    </body>
+</html>
